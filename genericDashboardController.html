@@ -1,0 +1,155 @@
+<template>
+    <lightning-card title="Generic Dashboard">
+
+        <!-- FILTERS -->
+        <div class="filters">
+            <lightning-input type="date" label="From Date" onchange={handleFromDate}>
+            </lightning-input>
+
+            <lightning-input type="date" label="To Date" onchange={handleToDate}>
+            </lightning-input>
+
+            <lightning-combobox label="User" options={userOptions} onchange={handleUserChange}>
+            </lightning-combobox>
+
+            <lightning-button label="Apply" variant="brand" onclick={handleApply}>
+            </lightning-button>
+
+        </div>
+
+        <!-- Total-->
+        <div class="box total">
+            <p>Total</p>
+            <h2>{grandTotal}</h2>
+        </div>
+
+
+        <!-- STATUS BOXES -->
+        <div class="summary">
+            <template for:each={statusBoxes} for:item="box">
+                <div key={box.status} class="box">
+                    <p>{box.status}</p>
+                    <h2>
+                        <span href="javascript:void(0)"
+       data-status={box.status}
+       onclick={handleStatusBoxClick}>
+       {box.count}
+    </span>
+                    </h2>
+
+                </div>
+            </template>
+        </div>
+
+        <!--table-->
+        <div style="text-align:center; font-size: 19px;font-weight: 700;margin-bottom: 14px;color: #111827;">
+            {statusFieldApi}</div>
+        <table>
+
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <template for:each={statuses} for:item="status">
+                        <th key={status}>{status}</th>
+                    </template>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <template for:each={tableRows} for:item="row">
+                    <tr key={row.user}>
+                        <td>{row.user}</td>
+
+                        <template for:each={row.statusCounts} for:item="sc">
+                            <!-- <td key={sc.status}>{sc.count}</td> -->
+                            <td key={sc.status}>
+                                <span href="javascript:void(0)"
+                    data-user={row.user}
+                    data-status={sc.status}
+                    onclick={handleStatusCellClick}>
+                    {sc.count}
+                    </span>
+                            </td>
+                        </template>
+
+                        <td class="bold">{row.total}</td>
+                    </tr>
+                </template>
+
+                <!-- ✅ STATUS TOTAL ROW -->
+                <tr class="bold">
+                    <td>Total</td>
+
+                    <template for:each={statusTotalsRow} for:item="st">
+                        <td key={st.status}>{st.count}</td>
+                    </template>
+
+                    <td>{grandTotal}</td>
+                </tr>
+            </tbody>
+
+        </table>
+
+
+
+        <!-- MULTIPLE TABLES (FROM CUSTOM LABEL FIELDS) -->
+        <template if:true={tables}>
+            <template for:each={tables} for:item="table">
+                <div key={table.field} class="section">
+                    <h3 style="text-align:center;">{table.fieldLabel}</h3>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <template for:each={table.picklistValues} for:item="val">
+                                        <th key={val}>{val}</th>
+                                    </template>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <template for:each={table.rows} for:item="row">
+                                    <tr key={row.user}>
+                                        <td>{row.user}</td>
+
+                                        <template for:each={row.values} for:item="v">
+                                            <td key={v.key}>
+                                                <span href="javascript:void(0)"
+                                            data-user={row.user}
+                                            data-field={table.field}
+                                            data-value={v.key}
+                                            onclick={handleLabelCellClick}>
+                                            {v.count}
+                                            </span>
+                                            </td>
+
+                                        </template>
+
+                                        <td class="bold">{row.total}</td>
+                                    </tr>
+                                </template>
+
+                                <!-- TOTAL ROW -->
+                                <tr class="bold">
+                                    <td>Total</td>
+
+                                    <template for:each={table.totalsArray} for:item="t">
+                                        <td key={t.key}>{t.count}</td>
+                                    </template>
+
+                                    <td>{table.grandTotal}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </template>
+        </template>
+
+    </lightning-card>
+</template>
